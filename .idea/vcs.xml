@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/anomalib(selected_framework)/git-repository" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/docs_about_SOTA_methods/1 - Anomaly Detection via Reverse Distillation from One-Class Embedding/RD4AD" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/docs_about_SOTA_methods/2 - Revisiting Reverse Distillation for Anomaly Detection/Revisiting-Reverse-Distillation" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/docs_about_SOTA_methods/3 - SimpleNet A Simple Network for Image Anomaly Detection and Localization/SimpleNet" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/docs_about_SOTA_methods/4 - Real-time unsupervised anomaly detection with localization via conditional normalizing flows/cflow-ad" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/docs_about_SOTA_methods/5 - PyramidFlow High-Resolution Defect Contrastive Localization using Pyramid Normalizing Flow/PyramidFlow" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/project_documentation/open-iad(interesting_benchmark)/git-repository" vcs="Git" />
+  </component>
+</project>
