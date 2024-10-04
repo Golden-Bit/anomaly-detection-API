@@ -14,7 +14,7 @@ from matplotlib import pyplot as plt
 
 def setup_dataset(dataset_root: Path, normal_dir: str, abnormal_dir: str, mask_dir: str) -> Folder:
     folder_datamodule = Folder(
-        name="hazelnut_toy",
+        name="white_cabinet_surface",
         root=dataset_root,
         normal_dir=normal_dir,
         abnormal_dir=abnormal_dir,
@@ -41,7 +41,7 @@ def create_folder_datasets(dataset_root: Path, normal_dir: str, abnormal_dir: st
     transform = Resize(image_size, antialias=True)
 
     folder_dataset_segmentation_train = FolderDataset(
-        name="hazelnut_toy",
+        name="white_cabinet_surface",
         normal_dir=dataset_root / normal_dir,
         abnormal_dir=dataset_root / abnormal_dir,
         split="train",
@@ -51,7 +51,7 @@ def create_folder_datasets(dataset_root: Path, normal_dir: str, abnormal_dir: st
     )
 
     folder_dataset_segmentation_test = FolderDataset(
-        name="hazelnut_toy",
+        name="white_cabinet_surface",
         normal_dir=dataset_root / normal_dir,
         abnormal_dir=dataset_root / abnormal_dir,
         split="test",

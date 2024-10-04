@@ -2,8 +2,8 @@ from typing import Optional, Union
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from pathlib import Path
-from utilities.utilities import infer_wf, test_wf, validate_model, train_model, create_folder_datasets, \
-    visualize_data, setup_dataset, export_model
+from utilities.utilities import (infer_wf, test_wf, validate_model, train_model, create_folder_datasets, \
+    visualize_data, setup_dataset, export_model)
 
 app = FastAPI(
     title="Anomaly Detection API",
@@ -63,7 +63,8 @@ def train(request: TrainRequest):
     mask_dir = request.mask_dir
     image_size = request.image_size
 
-    try:
+    #try:
+    if True:
         dataset_root = Path(dataset_root)
         folder_datamodule = setup_dataset(dataset_root, normal_dir, abnormal_dir, mask_dir)
         visualize_data(folder_datamodule)
@@ -75,8 +76,8 @@ def train(request: TrainRequest):
         validate_model(engine, model, folder_datamodule, engine.best_model_path)
 
         export_model(engine, model)
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    #except Exception as e:
+    #    raise HTTPException(status_code=500, detail=str(e))
 
     return {"status": "Training completed successfully"}
 
