@@ -12,6 +12,7 @@ app = FastAPI(
 
 
 class TrainRequest(BaseModel):
+    dataset_name: str = Field(..., example="hazelnut_toy", description="Name of the dataset")
     dataset_root: str = Field(..., example="datasets/hazelnut_toy", description="Root directory of the dataset")
     normal_dir: str = Field(..., example="good", description="Directory containing normal images")
     abnormal_dir: str = Field(..., example="crack", description="Directory containing abnormal images")
@@ -33,6 +34,7 @@ class InferenceRequest(BaseModel):
 
 
 class TestRequest(BaseModel):
+    dataset_name: str = Field(..., example="hazelnut_toy", description="Name of the dataset")
     dataset_root: str = Field(..., example="datasets/hazelnut_toy", description="Root directory of the dataset")
     normal_dir: str = Field(..., example="good", description="Directory containing normal images")
     abnormal_dir: str = Field(..., example="crack", description="Directory containing abnormal images")
@@ -57,6 +59,7 @@ def train(request: TrainRequest):
     Returns:
     - JSON response with status of the training process.
     """
+    dataset_name = request.dataset_name
     dataset_root = Path.cwd() / Path(request.dataset_root)
     normal_dir = request.normal_dir
     abnormal_dir = request.abnormal_dir
@@ -66,19 +69,34 @@ def train(request: TrainRequest):
     #try:
     if True:
         dataset_root = Path(dataset_root)
-        folder_datamodule = setup_dataset(dataset_root, normal_dir, abnormal_dir, mask_dir)
+        folder_datamodule = setup_dataset(
+            dataset_name,
+            dataset_root,
+            normal_dir,
+            abnormal_dir,
+            mask_dir
+        )
         visualize_data(folder_datamodule)
 
-        create_folder_datasets(dataset_root, normal_dir, abnormal_dir, mask_dir, image_size)
+        create_folder_datasets(
+            dataset_name,
+            dataset_root,
+            normal_dir,
+            abnormal_dir,
+            mask_dir,
+            image_size
+        )
 
         engine, model = train_model(folder_datamodule)
 
-        validate_model(engine, model, folder_datamodule, engine.best_model_path)
+        validation_result = validate_model(engine, model, folder_datamodule, engine.best_model_path)
 
         export_model(engine, model)
     #except Exception as e:
     #    raise HTTPException(status_code=500, detail=str(e))
 
+    # TODO
+    #  - valutare come serializzare informazioni in output
     return {"status": "Training completed successfully"}
 
 
@@ -103,7 +121,7 @@ def inference(request: InferenceRequest):
     metadata = request.metadata
 
     try:
-        response = infer_wf(
+        inference_result = infer_wf(
             engine=None,
             image_path=image_path,
             root_dir=root_dir,
@@ -113,6 +131,8 @@ def inference(request: InferenceRequest):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    # TODO
+    #  - valutare come serializzare informazioni in output
     return {"status": "Inference completed successfully"}#, "results": response.__dict__}
 
 
@@ -132,6 +152,7 @@ def test(request: TestRequest):
     Returns:
     - JSON response with status of the testing process.
     """
+    datast_name = request.datast_name
     dataset_root = Path.cwd() / Path(request.dataset_root)
     normal_dir = request.normal_dir
     abnormal_dir = request.abnormal_dir
@@ -139,10 +160,20 @@ def test(request: TestRequest):
     ckpt_path = request.ckpt_path
 
     try:
-        test_wf(dataset_root, normal_dir, abnormal_dir, mask_dir, ckpt_path)
+        test_result = test_wf(
+            datast_name,
+            dataset_root,
+            normal_dir,
+            abnormal_dir,
+            mask_dir,
+            ckpt_path
+        )
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    # TODO
+    #  - valutare come serializzare informazioni in output
     return {"status": "Testing completed successfully"}
 
 

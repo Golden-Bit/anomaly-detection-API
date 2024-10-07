@@ -1,4 +1,4 @@
-from typing import Optional, Union
+from typing import Optional, Union, List
 from pathlib import Path
 import numpy as np
 from PIL import Image
@@ -12,9 +12,15 @@ from anomalib.deploy import ExportType, OpenVINOInferencer
 from matplotlib import pyplot as plt
 
 
-def setup_dataset(dataset_root: Path, normal_dir: str, abnormal_dir: str, mask_dir: str) -> Folder:
+def setup_dataset(
+        dataset_name: str = "dataset_directory",
+        dataset_root: Path = None,
+        normal_dir: Union[str, List[str]] = None,
+        abnormal_dir: Union[str, List[str]] = None,
+        mask_dir: Union[str, List[str]] = None
+) -> Folder:
     folder_datamodule = Folder(
-        name="white_cabinet_surface",
+        name=dataset_name,
         root=dataset_root,
         normal_dir=normal_dir,
         abnormal_dir=abnormal_dir,
@@ -36,12 +42,17 @@ def visualize_data(folder_datamodule: Folder):
     Image.fromarray(np.hstack((np.array(img), np.array(msk)))).show()
 
 
-def create_folder_datasets(dataset_root: Path, normal_dir: str, abnormal_dir: str, mask_dir: str,
-                           image_size: tuple) -> tuple:
+def create_folder_datasets(
+        dataset_name: str = "dataset_directory",
+        dataset_root: Path = None,
+        normal_dir: Union[str, List[str]] = None,
+        abnormal_dir: Union[str, List[str]] = None,
+        mask_dir: Union[str, List[str]] = None,
+        image_size: tuple = None) -> tuple:
     transform = Resize(image_size, antialias=True)
 
     folder_dataset_segmentation_train = FolderDataset(
-        name="white_cabinet_surface",
+        name=dataset_name,
         normal_dir=dataset_root / normal_dir,
         abnormal_dir=dataset_root / abnormal_dir,
         split="train",
@@ -51,7 +62,7 @@ def create_folder_datasets(dataset_root: Path, normal_dir: str, abnormal_dir: st
     )
 
     folder_dataset_segmentation_test = FolderDataset(
-        name="white_cabinet_surface",
+        name=dataset_name,
         normal_dir=dataset_root / normal_dir,
         abnormal_dir=dataset_root / abnormal_dir,
         split="test",
@@ -110,11 +121,11 @@ def perform_inference(engine: Optional[Engine],
     predictions = inferencer.predict(image=image_path)
 
     print(predictions.pred_score, predictions.pred_label)
-    plt.imshow(predictions.image)
-    plt.imshow(predictions.anomaly_map)
-    plt.imshow(predictions.heat_map)
-    plt.imshow(predictions.pred_mask)
-    plt.imshow(predictions.segmentations)
+    #plt.imshow(predictions.image)
+    #plt.imshow(predictions.anomaly_map)
+    #plt.imshow(predictions.heat_map)
+    #plt.imshow(predictions.pred_mask)
+    #plt.imshow(predictions.segmentations)
 
     return predictions
 
@@ -133,17 +144,30 @@ def infer_wf(engine: Optional[Engine],
     return inference_response
 
 
-def test_wf(dataset_root: Optional[Union[str, Path]],
-            normal_dir: Optional[Union[str, Path]],
-            abnormal_dir: Optional[Union[str, Path]],
-            mask_dir: Optional[Union[str, Path]],
-            ckpt_path: Optional[Union[str, Path]]):
+def test_wf(
+        dataset_name: Optional[str] = "dataset_directory",
+        dataset_root: Optional[Union[str, Path]] = None,
+        normal_dir: Optional[Union[str, Path, List[Union[str, Path]]]] = None,
+        abnormal_dir: Optional[Union[str, Path, List[Union[str, Path]]]] = None,
+        mask_dir: Optional[Union[str, Path, List[Union[str, Path]]]] = None,
+        ckpt_path: Optional[Union[str, Path]] = None
+):
+
     dataset_root = Path(dataset_root)
-    folder_datamodule = setup_dataset(dataset_root, normal_dir, abnormal_dir, mask_dir)
+    folder_datamodule = setup_dataset(
+        dataset_name,
+        dataset_root,
+        normal_dir,
+        abnormal_dir,
+        mask_dir
+    )
+
     model = Padim()
     engine = Engine(task=TaskType.SEGMENTATION)
     test_response = validate_model(engine, model, folder_datamodule, ckpt_path)
     print(test_response)
+
+    return test_response
 
 
 if __name__ == "__main__":
