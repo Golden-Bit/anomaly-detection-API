@@ -25,7 +25,7 @@ def setup_dataset(
         normal_dir=normal_dir,
         abnormal_dir=abnormal_dir,
         task=TaskType.SEGMENTATION,
-        mask_dir=dataset_root / mask_dir / abnormal_dir,
+        mask_dir=[dataset_root / mask_dir / abnormal_dir_item for abnormal_dir_item in abnormal_dir],
         image_size=(256, 256),
         num_workers=0
     )
@@ -53,21 +53,21 @@ def create_folder_datasets(
 
     folder_dataset_segmentation_train = FolderDataset(
         name=dataset_name,
-        normal_dir=dataset_root / normal_dir,
-        abnormal_dir=dataset_root / abnormal_dir,
+        normal_dir=[dataset_root / normal_dir_item for normal_dir_item in normal_dir],
+        abnormal_dir=[dataset_root / abnormal_dir_item for abnormal_dir_item in abnormal_dir],
         split="train",
         transform=transform,
-        mask_dir=dataset_root / mask_dir / abnormal_dir,
+        mask_dir=[dataset_root / mask_dir / abnormal_dir_item for abnormal_dir_item in abnormal_dir],
         task=TaskType.SEGMENTATION,
     )
 
     folder_dataset_segmentation_test = FolderDataset(
         name=dataset_name,
-        normal_dir=dataset_root / normal_dir,
-        abnormal_dir=dataset_root / abnormal_dir,
+        normal_dir=[dataset_root / normal_dir_item for normal_dir_item in normal_dir],
+        abnormal_dir=[dataset_root / abnormal_dir_item for abnormal_dir_item in abnormal_dir],
         split="test",
         transform=transform,
-        mask_dir=dataset_root / mask_dir / abnormal_dir,
+        mask_dir=[dataset_root / mask_dir / abnormal_dir_item for abnormal_dir_item in abnormal_dir],
         task=TaskType.SEGMENTATION,
     )
 
