@@ -147,6 +147,27 @@ def infer_wf(engine: Optional[Engine],
              metadata: Optional[Union[str, Path]] = None,
              output_image_path: Optional[Union[str, Path]] = None):
 
+    # TODO:
+    #  - salva immagini contenute in inference_response
+
+    # Carica l'immagine per verificare la forma
+    image = Image.open(image_path)
+    image_np = np.array(image)
+
+    # Controlla la forma dell'immagine e adatta il numero di canali se necessario
+    if image_np.shape[2] == 4:  # Se l'immagine ha 4 canali (es: RGBA)
+        # Rimuovi il canale alfa per ottenere un'immagine con 3 canali (RGB)
+        image_np = image_np[:, :, :3]
+        # Salva l'immagine modificata (opzionale)
+        image = Image.fromarray(image_np)
+        image.save(image_path)  # Sovrascrive l'immagine originale con quella modificata
+
+    elif image_np.shape[2] != 3:
+        raise ValueError(
+            "Il modello si aspetta un'immagine con 3 canali (RGB), ma l'immagine fornita ha {} canali.".format(
+                image_np.shape[2]))
+
+    # Esegui l'inferenza
     inference_response = perform_inference(engine=engine,
                                            image_path=Path(image_path),
                                            root_dir=root_dir,
@@ -161,9 +182,9 @@ def infer_wf(engine: Optional[Engine],
     save_output_images(predictions=inference_response,
                        output_image_path=output_image_path)
 
-    #base64_output_image = save_output_images_as_base64(predictions=inference_response)
+    # base64_output_image = save_output_images_as_base64(predictions=inference_response)
 
-    #print(base64_output_image)
+    # print(base64_output_image)
 
     return serialize_for_api({
         "pred_score": inference_response.pred_score,

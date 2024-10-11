@@ -23,7 +23,7 @@ class TrainRequest(BaseModel):
     num_workers: int = Field(..., example=0, description="Number of **workers** to use for data loading. Increasing this value can improve performance by parallelizing data processing tasks.")
     model_kwargs: Optional[dict] = Field(
         default_factory=dict,
-        example={"learning_rate": 0.001, "epochs": 10},
+        example={"backbone": "resnet18"},
         description="Additional keyword arguments for the model."
     )
     output_file_path: Optional[str] = Field(
@@ -220,7 +220,7 @@ def train(request: TrainRequest):
 
         # visualize_data(folder_datamodule)
 
-        engine, model = train_model(folder_datamodule, **model_kwargs)
+        engine, model = train_model(folder_datamodule, model_kwargs)
 
         validation_result = validate_model(engine, model, folder_datamodule, engine.best_model_path)
 
