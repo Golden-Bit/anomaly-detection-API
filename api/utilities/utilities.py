@@ -177,7 +177,7 @@ def infer_wf(engine: Optional[Engine],
     # TODO:
     #  - salva immagini contenute in inference_response
 
-    output_image_path = root_dir / output_image_path
+    #output_image_path = root_dir / output_image_path
 
     save_output_images(predictions=inference_response,
                        output_image_path=output_image_path)
