@@ -98,7 +98,7 @@ def validate_model(engine: Engine, model: Padim, folder_datamodule: Folder, ckpt
     test_results = engine.test(
         model=model,
         datamodule=folder_datamodule,
-        ckpt_path=ckpt_path
+        ckpt_path=ckpt_path,
     )
 
     return test_results

@@ -22,7 +22,7 @@ class TrainRequest(BaseModel):
     image_size: tuple[int, int] = Field((256, 256), example=(256, 256), description="Target **size** to which all images should be resized before processing. Provided as a tuple of `(width, height)`.")
     num_workers: int = Field(..., example=0, description="Number of **workers** to use for data loading. Increasing this value can improve performance by parallelizing data processing tasks.")
     model_kwargs: Optional[dict] = Field(
-        default_factory=dict,
+        default_factory={},
         example={"backbone": "resnet18"},
         description="Additional keyword arguments for the model."
     )
